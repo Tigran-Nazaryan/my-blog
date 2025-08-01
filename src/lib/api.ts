@@ -1,16 +1,21 @@
-import {Post} from "@/types/post";
+import { Post } from "@/types/post";
 
 const API_BASE = process.env.API_BASE_URL;
 
-export async function getPosts(): Promise<Post[]> {
-    const res = await fetch(`${API_BASE}/posts`, {cache: 'no-store'});
-    if (!res.ok) throw new Error(res.statusText);
-    console.log(res)
+async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
+    const res = await fetch(url, options);
+    if (!res.ok) {
+        // Можно обработать различные типы ошибок здесь
+        const errorData = await res.json().catch(() => ({ message: res.statusText }));
+        throw new Error(errorData.message || 'An error occurred while loading data.');
+    }
     return await res.json();
 }
 
+export async function getPosts(): Promise<Post[]> {
+    return fetcher<Post[]>(`${API_BASE}/posts`, { cache: 'no-store' });
+}
+
 export async function getPostById(id: string): Promise<Post> {
-    const res = await fetch(`${API_BASE}/posts/${id}`, {cache: 'no-store'});
-    if (!res.ok) throw new Error(res.statusText);
-    return await res.json();
+    return fetcher<Post>(`${API_BASE}/posts/${id}`, { cache: 'no-store' });
 }

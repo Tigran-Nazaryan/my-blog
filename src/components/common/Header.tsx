@@ -1,6 +1,6 @@
 'use client';
 
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import AppMenu from "@/components/common/layout/menu";
 
 const { Header } = Layout;
