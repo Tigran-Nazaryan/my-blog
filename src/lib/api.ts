@@ -5,7 +5,6 @@ const API_BASE = process.env.API_BASE_URL;
 async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
     const res = await fetch(url, options);
     if (!res.ok) {
-        // Можно обработать различные типы ошибок здесь
         const errorData = await res.json().catch(() => ({ message: res.statusText }));
         throw new Error(errorData.message || 'An error occurred while loading data.');
     }
