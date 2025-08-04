@@ -1,5 +1,3 @@
 export interface Props {
-    params: {
-        id: string
-    };
+    id: string,
 }
