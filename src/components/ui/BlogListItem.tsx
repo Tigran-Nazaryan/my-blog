@@ -20,7 +20,7 @@ export default function BlogListItem({ post }: { post: Post }) {
             </Paragraph>
 
             <Text type="secondary">
-                Автор: {post.author} · {new Date(post.createdAt).toLocaleDateString()}
+                Author: {post.author} · {new Date(post.createdAt).toLocaleDateString()}
             </Text>
         </Card>
     );

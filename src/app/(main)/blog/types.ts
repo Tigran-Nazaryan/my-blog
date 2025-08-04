@@ -1,5 +1,5 @@
 export interface Props {
     params: {
-        slug: string;
+        id: string
     };
 }

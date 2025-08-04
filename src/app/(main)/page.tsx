@@ -1,9 +1,8 @@
 import BlogListItem from "@/components/ui/BlogListItem";
-import {Post} from "@/types/post";
-import {getPosts} from "@/lib/api";
+import {fetchPosts} from "@/lib/db";
 
 export default async function Home() {
-    const posts: Post[] = await getPosts();
+    const posts = await fetchPosts();
 
     return (
         <div>
