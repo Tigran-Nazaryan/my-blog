@@ -1,22 +1,20 @@
 import { Post } from "@/types/post";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL;
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
-if (!API_BASE) {
-    throw new Error("API_BASE_URL is not set");
-}
+const API_BASE = process.env.NEXT_PUBLIC_BASE_URL;
 
 export async function fetchPosts(): Promise<Post[]> {
-    const res = await fetch(`${BASE_URL}/api/posts`);
-    if (!res.ok) throw new Error('Failed to fetch posts');
-    return res.json();
+    const res = await fetch(`${API_BASE}/api/posts`);
+    if (!res.ok) throw new Error("Failed to fetch posts");
+
+    const json = await res.json();
+    return json.data as Post[];
 }
 
-export async function getPostById(id: string):Promise<Post> {
-    const res = await fetch(`${BASE_URL}/api/posts/${id}`, { cache: 'no-store' });
-    if (!res.ok) {
-        throw new Error('Post not found');
-    }
-    return res.json();
+export async function getPostById(id: string): Promise<Post> {
+    const res = await fetch(`${API_BASE}/api/posts/${id}`);
+    if (!res.ok) throw new Error("Post not found");
+
+    const json = await res.json();
+    return json.data as Post;
 }
+
