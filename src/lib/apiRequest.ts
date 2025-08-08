@@ -1,0 +1,21 @@
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+
+export async function apiRequest<T>(
+  path: string,
+  options?: RequestInit
+): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, options);
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || `Request failed with status ${res.status}`);
+  }
+
+  const contentType = res.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    const json = await res.json();
+    return json.data || json;
+  }
+
+  return null as unknown as T;
+}
