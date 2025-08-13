@@ -4,5 +4,6 @@ export interface Post {
     avatar?: string
     body: string;
     author: string;
+    userId: number;
     createdAt: string;
 }

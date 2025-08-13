@@ -25,9 +25,9 @@ export default function EditPostModal({ post, isOpen, onClose, onUpdate }: EditP
   async function handleUpdate() {
     setLoading(true);
     try {
-      const updated = await updatePost(post.id, { title, body });
-      onUpdate(updated); // Вызываем функцию из родителя для обновления
-      onClose(); // Закрываем модальное окно
+      const updated = await updatePost(post.id, { title, body, userId: post.userId });
+      onUpdate(updated);
+      onClose();
       message.success("Post updated successfully!");
     } catch (err) {
       message.error("Failed to update post.");

@@ -31,7 +31,6 @@ export default function Home() {
         setLoading(false);
       }
     }
-
     getPosts();
   }, []);
 
@@ -48,6 +47,7 @@ export default function Home() {
         body: newPostBody,
         author: "Admin",
         avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+        userId: 1
       });
       setPosts([newPost, ...posts]);
 
@@ -66,7 +66,6 @@ export default function Home() {
   if (loading) {
     return <div>Loading posts...</div>;
   }
-
   return (
     <div style={{padding: '1rem'}}>
       <div style={{marginBottom: '1rem'}}>

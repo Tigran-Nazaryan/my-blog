@@ -14,7 +14,7 @@ export async function apiRequest<T>(
   const contentType = res.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
     const json = await res.json();
-    return json.data || json;
+    return json;
   }
 
   return null as unknown as T;

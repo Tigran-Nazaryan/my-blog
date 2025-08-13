@@ -1,9 +1,7 @@
-// components/CreatePostModal.tsx
+import { Form, Input, Modal } from "antd";
+import { useEffect } from "react";
 
-import React from "react";
-import { Modal, Input } from "antd";
-
-type CreatePostModalProps = {
+interface CreatePostModalProps {
   open: boolean;
   loading: boolean;
   title: string;
@@ -12,40 +10,56 @@ type CreatePostModalProps = {
   onBodyChange: (value: string) => void;
   onOk: () => void;
   onCancel: () => void;
-};
+}
 
-const CreatePostModal: React.FC<CreatePostModalProps> = ({
-                                                           open,
-                                                           loading,
-                                                           title,
-                                                           body,
-                                                           onTitleChange,
-                                                           onBodyChange,
-                                                           onOk,
-                                                           onCancel,
-                                                         }) => {
+export default function CreatePostModal({ open, loading, title, body, onTitleChange, onBodyChange, onOk, onCancel }: CreatePostModalProps) {
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({ title, body });
+  }, [title, body, form]);
+
+  const handleSubmit = () => {
+    form
+      .validateFields()
+      .then(() => {
+        onOk();
+      })
+      .catch((info) => {
+        console.log("Validation Failed:", info);
+      });
+  };
+
   return (
     <Modal
-      title="Create Post"
       open={open}
-      onOk={onOk}
-      onCancel={onCancel}
       confirmLoading={loading}
+      onOk={handleSubmit}
+      onCancel={onCancel}
+      title="Create a new post"
     >
-      <Input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => onTitleChange(e.target.value)}
-        style={{ marginBottom: 12 }}
-      />
-      <Input.TextArea
-        placeholder="Text"
-        value={body}
-        onChange={(e) => onBodyChange(e.target.value)}
-        rows={4}
-      />
+      <Form form={form} layout="vertical">
+        <Form.Item
+          label="Title"
+          name="title"
+          rules={[
+            { required: true, message: "Please enter a title" },
+            { min: 3, message: "Title must be at least 3 characters" }
+          ]}
+        >
+          <Input onChange={(e) => onTitleChange(e.target.value)} />
+        </Form.Item>
+
+        <Form.Item
+          label="Text"
+          name="body"
+          rules={[
+            { required: true, message: "Please enter the body of the post" }
+          ]}
+        >
+          <Input.TextArea rows={4} onChange={(e) => onBodyChange(e.target.value)} />
+        </Form.Item>
+      </Form>
     </Modal>
   );
-};
-
-export default CreatePostModal;
+}

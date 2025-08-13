@@ -7,7 +7,7 @@ export async function fetchPosts(): Promise<Post[]> {
     if (!res.ok) throw new Error("Failed to fetch posts");
 
     const json = await res.json();
-    return json.data as Post[];
+    return json;
 }
 
 export async function getPostById(id: string): Promise<Post> {
@@ -15,6 +15,6 @@ export async function getPostById(id: string): Promise<Post> {
     if (!res.ok) throw new Error("Post not found");
 
     const json = await res.json();
-    return json.data as Post;
+    return json.data;
 }
 

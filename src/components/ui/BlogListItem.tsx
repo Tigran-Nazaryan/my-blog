@@ -9,9 +9,9 @@ import {deletePost} from "@/services/postServices";
 import {toast} from "react-toastify";
 import EditPostModal from "@/components/ui/modals/EditPostModal";
 
-const {Title, Paragraph, Text} = Typography;
+const { Title, Paragraph } = Typography;
 
-export default function BlogListItem({post}: { post: Post }) {
+export default function BlogListItem({ post }: { post: Post }) {
   const [localPost, setLocalPost] = useState(post);
   const [deleted, setDeleted] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -61,19 +61,19 @@ export default function BlogListItem({post}: { post: Post }) {
         </Link>
 
         <Paragraph style={{marginTop: '0.5rem'}}>
-          {localPost.body.slice(0, 100)}...
+          {localPost.body.length > 100
+            ? `${localPost.body.slice(0, 100)}...`
+            : localPost.body}
         </Paragraph>
 
         <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-          <Text type="secondary">
-            Author: {localPost.author} · {new Date(localPost.createdAt).toLocaleDateString()}
-          </Text>
 
           <Image
             src={localPost.avatar as string}
             width={40}
             height={40}
             alt={`Avatar of ${localPost.author}`}
+            style={{borderRadius: '50%', marginBottom: 8}}
             className="rounded-full"
           />
 

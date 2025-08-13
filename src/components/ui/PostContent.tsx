@@ -1,6 +1,6 @@
 'use client';
 
-import {Card, Typography, Button, Space} from 'antd';
+import { Card, Typography, Button, Space } from 'antd';
 import Link from 'next/link';
 import {Post} from '@/types/post';
 import Image from "next/image";
@@ -15,7 +15,6 @@ export default function PostContent({post}: { post: Post }) {
                     <Title level={2}>{post.title}</Title>
 
                     <Text type="secondary">Author: {post.author}</Text>
-                    <Text type="secondary">Date: {new Date(post.createdAt).toLocaleDateString()}</Text>
 
                     <Paragraph>{post.body}</Paragraph>
 
