@@ -18,14 +18,16 @@ export default function PostContent({post}: { post: Post }) {
 
                     <Paragraph>{post.body}</Paragraph>
 
-                    <Image
-                      src={post.avatar}
-                      alt={`Avatar of ${post.author}`}
-                      width={40}
-                      height={40}
-                      style={{borderRadius: '50%', marginBottom: 8}}
-                      priority={false}
-                    />
+                    {post.avatar && (
+                      <Image
+                        src={post.avatar}
+                        alt={`Avatar of ${post.author}`}
+                        width={40}
+                        height={40}
+                        style={{ borderRadius: '50%', marginBottom: 8 }}
+                        priority={false}
+                      />
+                    )}
 
                     <Link href="/">
                         <Button type="primary">← Back to posts</Button>

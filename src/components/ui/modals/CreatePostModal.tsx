@@ -16,8 +16,10 @@ export default function CreatePostModal({ open, loading, title, body, onTitleCha
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({ title, body });
-  }, [title, body, form]);
+    if (open) {
+      form.setFieldsValue({ title, body });
+    }
+  }, [open, title, body, form]);
 
   const handleSubmit = () => {
     form

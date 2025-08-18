@@ -3,14 +3,29 @@
 import {useEffect, useState} from "react";
 import BlogListItem from "@/components/ui/BlogListItem";
 import {createPost} from "@/services/postServices";
-import {Button} from "antd";
+import {Button, Spin} from "antd";
 import {Post} from "@/types/post";
 import {fetchPosts} from "@/lib/db";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
 import CreatePostModal from "@/components/ui/modals/CreatePostModal";
+import {useAuth} from "@/store/store";
+import {useRouter} from "next/navigation";
 
 export default function Home() {
+  const { checkAuth, isAuth, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!isAuth) {
+      router.push("/auth/login");
+    }
+  }, [checkAuth]);
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,6 +81,7 @@ export default function Home() {
   if (loading) {
     return <div>Loading posts...</div>;
   }
+
   return (
     <div style={{padding: '1rem'}}>
       <div style={{marginBottom: '1rem'}}>
