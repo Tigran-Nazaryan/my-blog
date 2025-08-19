@@ -1,22 +1,26 @@
 import {toast} from "react-toastify";
 import {useAuth} from "@/store/store";
 import {Button, Form, Input} from "antd";
+import {useRouter} from "next/navigation";
 
 interface FormValues {
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
 }
 
 export default function RegistrationForm() {
   const { registration } = useAuth();
+  const router = useRouter()
 
   const handleRegister = async (values: FormValues) => {
-    console.log("Submitting registration form:", values);
     try {
-      await registration(values.email, values.password);
+      await registration(values.email, values.password, values.firstName, values.lastName);
       toast.success("Registration successful");
-    } catch (error) {
-      toast.error("Registration failed");
+      router.push("/auth/login");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
@@ -27,7 +31,7 @@ export default function RegistrationForm() {
         name="firstName"
         rules={[{ required: true, message: "Enter your firstName" }]}
       >
-        <Input.Password placeholder="Enter your password" />
+        <Input placeholder="Enter your password" />
       </Form.Item>
 
       <Form.Item
@@ -35,7 +39,7 @@ export default function RegistrationForm() {
         name="lastName"
         rules={[{ required: true, message: "Enter your lastName" }]}
       >
-        <Input.Password placeholder="Enter your lastName" />
+        <Input placeholder="Enter your lastName" />
       </Form.Item>
 
       <Form.Item

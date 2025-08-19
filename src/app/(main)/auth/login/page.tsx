@@ -6,7 +6,7 @@ import {useAuth} from "@/store/store";
 import {Button, Spin} from "antd";
 
 export default function Login() {
-  const {checkAuth, isAuth, logout, isLoading} = useAuth()
+  const { checkAuth, isAuth, logout, isLoading } = useAuth()
 
   useEffect(() => {
     if (localStorage.getItem("token")) {

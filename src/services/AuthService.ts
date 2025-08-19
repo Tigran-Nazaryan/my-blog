@@ -1,37 +1,31 @@
-import { $api } from "@/http";
+import {$api} from "@/http";
 import {AuthResponse} from "@/models/response/AuthResponse";
 
 export default class AuthService {
   static async login(email: string, password: string): Promise<AuthResponse> {
-    const response = await $api('/api/auth/login', {
+    const data = await $api('/api/auth/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Login failed');
+    console.log("data login", data);
+
+    if (!data.accessToken) {
+      throw new Error(data.message || 'Login failed');
     }
 
-    return await response.json();
+    return data;
   }
 
-  static async registration(email: string, password: string): Promise<AuthResponse> {
-    const response = await $api('/api/auth/registration', {
+  static async registration(email: string, password: string, firstName: string, lastName: string): Promise<AuthResponse> {
+    return await $api('/api/auth/registration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({email, password, firstName, lastName}),
     });
-
-    console.log('Registration response:', response);
-    return response;
   }
-
 
   static async logout(): Promise<void> {
     return $api('/api/auth/logout', {

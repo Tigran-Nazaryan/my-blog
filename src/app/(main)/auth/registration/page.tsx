@@ -13,7 +13,7 @@ export default function Registration() {
     if (localStorage.getItem("token")) {
       checkAuth();
     }
-  }, [checkAuth]);
+  }, []);
 
   if (isLoading) {
     return <Spin />;

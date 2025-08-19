@@ -3,16 +3,16 @@
 import React, {createContext, useState, useContext, ReactNode} from 'react';
 import AuthService from '@/services/AuthService';
 import {IUser} from '@/models/Iuser';
-import {AuthResponse} from "@/models/response/AuthResponse";
+import {AuthResponse, VerifyResponse} from "@/models/response/AuthResponse";
+import {useRouter} from "next/navigation";
 
-const BASE_URL = process.env.BASE_URL;
-
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 interface AuthContextType {
   user: IUser | null;
   isAuth: boolean;
   login: (email: string, password: string) => Promise<void>;
-  registration: (email: string, password: string) => Promise<void>;
+  registration: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   isLoading: boolean;
@@ -24,29 +24,30 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const login = async (email: string, password: string) => {
     try {
       const response = await AuthService.login(email, password);
-      console.log(`login ${response}`);
       localStorage.setItem('token', response.accessToken);
+      localStorage.setItem("user", JSON.stringify(response.user));
       setUser(response.user);
       setIsAuth(true);
+      router.push("/");
     } catch (e: any) {
       console.log(e);
+      throw e;
     }
   };
 
-  const registration = async (email: string, password: string) => {
+  const registration = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
-      const response = await AuthService.registration(email, password);
-      console.log(`reg ${response}`);
-
-      localStorage.setItem('token', response.accessToken);
-      setUser(response.user);
-      setIsAuth(true);
+      const response = await AuthService.registration(email, password, firstName, lastName);
+      // setUser(response.user);
+      // setIsAuth(true);
     } catch (e: any) {
       console.log(e || 'Registration error');
+      throw e;
     }
   };
 
@@ -63,9 +64,21 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
   const checkAuth = async () => {
     setIsLoading(true);
+
     try {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        setIsAuth(false);
+        setIsLoading(false);
+        throw new Error('No token found in localStorage');
+      }
+
       const res = await fetch(`${BASE_URL}/api/auth/verify`, {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         credentials: 'include',
       });
 
@@ -73,12 +86,6 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      const data: AuthResponse = await res.json();
-
-      console.log(data);
-
-      localStorage.setItem('token', data.accessToken);
-      setUser(data.user);
       setIsAuth(true);
     } catch (e: any) {
       console.log(e);

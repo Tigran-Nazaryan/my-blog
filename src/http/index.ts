@@ -28,9 +28,6 @@ export async function $api(path: string, options: RequestInit = {}, isRetry = fa
     credentials: 'include',
   };
 
-
-  console.log('API Request:', { url: `${BASE_URL}${path}`, config });
-
   const response = await fetch(`${BASE_URL}${path}`, config);
 
   if (response.status === 401 && !isRetry) {
@@ -59,6 +56,5 @@ export async function $api(path: string, options: RequestInit = {}, isRetry = fa
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   const jsonData = await response.json();
-  console.log('API Response data:', jsonData)
-  return response.json();
+  return jsonData;
 }

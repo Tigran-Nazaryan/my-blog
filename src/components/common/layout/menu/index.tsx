@@ -14,7 +14,7 @@ const AppMenu: FC = () => {
 
   return (
     <Menu
-      defaultSelectedKeys={['posts']}
+      defaultSelectedKeys={['login']}
       items={items}
       theme="dark"
       style={{ display: "flex", gap: "1rem" }}

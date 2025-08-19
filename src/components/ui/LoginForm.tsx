@@ -14,12 +14,11 @@ export default function LoginForm() {
   const { login } = useAuth();
 
   const handleLogin = async (values: FormValues) => {
-    console.log("Submitting login form:", values);
     try {
       await login(values.email, values.password);
       toast.success("Login successful");
-    } catch (error) {
-      toast.error("Login failed");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 

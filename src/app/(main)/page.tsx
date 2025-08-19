@@ -21,10 +21,12 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!isAuth) {
+    console.log('Auth status changed:', { isAuth, isLoading });
+    if (!isLoading && !isAuth) {
       router.push("/auth/login");
     }
-  }, [checkAuth]);
+  }, [isAuth, isLoading]);
+
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,19 +37,22 @@ export default function Home() {
   const [createLoading, setCreateLoading] = useState(false);
 
   useEffect(() => {
-    async function getPosts() {
-      setLoading(true);
-      try {
-        const fetchedPosts = await fetchPosts();
-        setPosts(fetchedPosts);
-      } catch (err) {
-        toast.error("Failed to fetch posts");
-      } finally {
-        setLoading(false);
+    if (isAuth) {
+      async function getPosts() {
+        setLoading(true);
+        try {
+          const fetchedPosts = await fetchPosts();
+          setPosts(fetchedPosts);
+        } catch (err) {
+          toast.error("Failed to fetch posts");
+        } finally {
+          setLoading(false);
+        }
       }
+      getPosts();
     }
-    getPosts();
-  }, []);
+  }, [isAuth]);
+
 
   async function handleCreatePost() {
     if (!newPostTitle || !newPostBody) {
@@ -79,7 +84,7 @@ export default function Home() {
   }
 
   if (loading) {
-    return <div>Loading posts...</div>;
+    return <Spin />;
   }
 
   return (

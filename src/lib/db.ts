@@ -3,7 +3,12 @@ import { Post } from "@/types/post";
 const API_BASE = process.env.NEXT_PUBLIC_BASE_URL;
 
 export async function fetchPosts(): Promise<Post[]> {
-    const res = await fetch(`${API_BASE}/api/posts`);
+    const res = await fetch(`${API_BASE}/api/posts`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch posts");
 
     const json = await res.json();
