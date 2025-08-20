@@ -13,7 +13,7 @@ import {useAuth} from "@/store/store";
 import {useRouter} from "next/navigation";
 
 export default function Home() {
-  const {checkAuth, isAuth, isLoading} = useAuth();
+  const {checkAuth, isAuth, isLoading, user} = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -54,6 +54,7 @@ export default function Home() {
     }
   }, [isAuth]);
 
+  console.log(posts)
 
   async function handleCreatePost() {
     if (!newPostTitle || !newPostBody) {
@@ -68,8 +69,8 @@ export default function Home() {
         body: newPostBody,
         author: "Admin",
         avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-        userId: 1
       });
+      console.log("Creating post with data:", newPost);
       setPosts([newPost, ...posts]);
 
       setCreateModalOpen(false);

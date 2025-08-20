@@ -16,6 +16,12 @@ export async function apiRequest<T>(
     headers.set("Content-Type", "application/json");
   }
 
+  console.log(`[API REQUEST] ${options.method || "GET"} ${BASE_URL}${path}`);
+  console.log("Headers:", Object.fromEntries(headers.entries()));
+  if (options.body) {
+    console.log("Body:", options.body);
+  }
+
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
     headers,

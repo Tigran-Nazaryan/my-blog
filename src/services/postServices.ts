@@ -1,7 +1,7 @@
 import { Post } from "@/types/post";
 import { apiRequest } from "@/lib/apiRequest";
 
-export function createPost(postData: Omit<Post, "id" | "createdAt">): Promise<Post> {
+export function createPost(postData: Omit<Post, "id" | "createdAt" | "userId">): Promise<Post> {
   return apiRequest("/api/posts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
