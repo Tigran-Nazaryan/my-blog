@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect, useState} from "react";
-import BlogListItem from "@/components/ui/BlogListItem";
+import {BlogListItem} from "@/components/ui/BlogListItem";
 import {createPost} from "@/services/postServices";
 import {Button, Spin} from "antd";
 import {Post} from "@/types/post";
@@ -21,6 +21,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (isLoading) return;
+
     if (!isLoading && !isAuth) {
       router.push("/auth/login");
     }

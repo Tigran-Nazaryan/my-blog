@@ -9,9 +9,9 @@ import {deletePost} from "@/services/postServices";
 import {toast} from "react-toastify";
 import EditPostModal from "@/components/ui/modals/EditPostModal";
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text  } = Typography;
 
-export default function BlogListItem({ post }: { post: Post }) {
+export function BlogListItem({post}: { post: Post }) {
   const [localPost, setLocalPost] = useState(post);
   const [deleted, setDeleted] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -66,7 +66,9 @@ export default function BlogListItem({ post }: { post: Post }) {
             : localPost.body}
         </Paragraph>
 
-        <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+        <Text type="secondary">Author: {post.author}</Text>
+
+        <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem'}}>
 
           <Image
             src={localPost.avatar as string}
