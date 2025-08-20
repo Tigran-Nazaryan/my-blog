@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { useAuth } from "@/store/store";
-import { Spin } from "antd";
+import {useEffect} from "react";
+import {useAuth} from "@/store/store";
+import {Spin} from "antd";
 import RegistrationForm from "@/components/ui/SignUpForm";
-import Dashboard from "@/app/(main)/dashboard/page";
 
 export default function Registration() {
-  const { checkAuth, isAuth, isLoading } = useAuth();
+  const {checkAuth, isLoading} = useAuth();
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -16,16 +15,12 @@ export default function Registration() {
   }, []);
 
   if (isLoading) {
-    return <Spin />;
-  }
-
-  if (isAuth) {
-    return <Dashboard />;
+    return <Spin/>;
   }
 
   return (
     <div>
-      <RegistrationForm />
+      <RegistrationForm/>
     </div>
   );
 }

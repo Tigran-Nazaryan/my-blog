@@ -2,9 +2,25 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export async function apiRequest<T>(
   path: string,
-  options?: RequestInit
+  options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, options);
+  const token = localStorage.getItem("token");
+
+  const headers = new Headers(options.headers || {});
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  if (!headers.has("Content-Type") && options.body) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
 
   if (!res.ok) {
     const errorText = await res.text();
@@ -13,8 +29,7 @@ export async function apiRequest<T>(
 
   const contentType = res.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
-    const json = await res.json();
-    return json;
+    return res.json();
   }
 
   return null as unknown as T;

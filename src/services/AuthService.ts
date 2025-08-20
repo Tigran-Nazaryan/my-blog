@@ -8,8 +8,6 @@ export default class AuthService {
       body: JSON.stringify({ email, password }),
     });
 
-    console.log("data login", data);
-
     if (!data.accessToken) {
       throw new Error(data.message || 'Login failed');
     }

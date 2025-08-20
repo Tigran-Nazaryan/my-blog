@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { Form, Input, Button } from "antd";
-import { toast } from "react-toastify";
-import { useAuth } from "@/store/store";
+import {Form, Input, Button, Card} from "antd";
+import {toast} from "react-toastify";
+import {useAuth} from "@/store/store";
+import Link from "next/link";
 
 interface FormValues {
   email: string;
@@ -11,7 +12,7 @@ interface FormValues {
 }
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const {login} = useAuth();
 
   const handleLogin = async (values: FormValues) => {
     try {
@@ -23,28 +24,40 @@ export default function LoginForm() {
   };
 
   return (
-    <Form layout="vertical" onFinish={handleLogin}>
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, type: "email", message: "Please enter a valid email" }]}
-      >
-        <Input placeholder="Enter your email" />
-      </Form.Item>
+    <Card title="Login" style={{ width: 400 }}>
+        <Form layout="vertical" onFinish={handleLogin}>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{required: true, type: "email", message: "Please enter a valid email"}]}
+          >
+            <Input placeholder="Enter your email"/>
+          </Form.Item>
 
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: "Enter your password" }]}
-      >
-        <Input.Password placeholder="Enter your password" />
-      </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{required: true, message: "Enter your password"}]}
+          >
+            <Input.Password placeholder="Enter your password"/>
+          </Form.Item>
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit" block>
-          Login
-        </Button>
-      </Form.Item>
-    </Form>
+          <a href="/auht/registration"></a>
+
+          <Form.Item>
+            <div style={{textAlign: "center", marginBottom: "1rem"}}>
+              Don't have an account?{" "}
+              <Link href="/auth/registration">
+                Register here
+              </Link>
+            </div>
+
+            <Button type="primary" htmlType="submit" block>
+              Login
+            </Button>
+          </Form.Item>
+
+        </Form>
+    </Card>
   );
 };

@@ -13,7 +13,7 @@ import {useAuth} from "@/store/store";
 import {useRouter} from "next/navigation";
 
 export default function Home() {
-  const { checkAuth, isAuth, isLoading } = useAuth();
+  const {checkAuth, isAuth, isLoading} = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -21,12 +21,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    console.log('Auth status changed:', { isAuth, isLoading });
     if (!isLoading && !isAuth) {
       router.push("/auth/login");
     }
   }, [isAuth, isLoading]);
-
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +47,7 @@ export default function Home() {
           setLoading(false);
         }
       }
+
       getPosts();
     }
   }, [isAuth]);
@@ -84,7 +83,7 @@ export default function Home() {
   }
 
   if (loading) {
-    return <Spin />;
+    return <Spin/>;
   }
 
   return (

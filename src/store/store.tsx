@@ -2,9 +2,8 @@
 
 import React, {createContext, useState, useContext, ReactNode} from 'react';
 import AuthService from '@/services/AuthService';
-import {IUser} from '@/models/Iuser';
-import {AuthResponse, VerifyResponse} from "@/models/response/AuthResponse";
-import {useRouter} from "next/navigation";
+import { IUser } from '@/models/Iuser';
+import { useRouter } from "next/navigation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -35,18 +34,14 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
       setIsAuth(true);
       router.push("/");
     } catch (e: any) {
-      console.log(e);
       throw e;
     }
   };
 
   const registration = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
-      const response = await AuthService.registration(email, password, firstName, lastName);
-      // setUser(response.user);
-      // setIsAuth(true);
+      await AuthService.registration(email, password, firstName, lastName);
     } catch (e: any) {
-      console.log(e || 'Registration error');
       throw e;
     }
   };
@@ -94,7 +89,6 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <AuthContext.Provider value={{user, isAuth, login, registration, logout, checkAuth, isLoading}}>
