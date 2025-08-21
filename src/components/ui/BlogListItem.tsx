@@ -66,7 +66,9 @@ export function BlogListItem({post}: { post: Post }) {
             : localPost.body}
         </Paragraph>
 
-        <Text type="secondary">Author: {post.author}</Text>
+        <Text type="secondary">
+          Author: <Link href={`/authors/${localPost.userId}`}>{localPost.author}</Link>
+        </Text>
 
         <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem'}}>
 

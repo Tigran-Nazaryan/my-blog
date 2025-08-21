@@ -22,6 +22,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    optimizePackageImports: ['antd'],
+  },
 };
 
 export default nextConfig;

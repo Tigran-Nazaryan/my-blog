@@ -4,6 +4,7 @@ import React, {createContext, useState, useContext, ReactNode} from 'react';
 import AuthService from '@/services/AuthService';
 import { IUser } from '@/models/Iuser';
 import { useRouter } from "next/navigation";
+import Cookies from 'js-cookie';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -30,6 +31,11 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
       const response = await AuthService.login(email, password);
       localStorage.setItem('token', response.accessToken);
       localStorage.setItem("user", JSON.stringify(response.user));
+
+      Cookies.set('token', response.accessToken, {
+        path: '/',
+        expires: 15,
+      });
       setUser(response.user);
       setIsAuth(true);
       router.push("/");
@@ -50,8 +56,10 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     try {
       await AuthService.logout();
       localStorage.removeItem('token');
+      Cookies.remove('token');
       setUser(null);
       setIsAuth(false);
+      router.push("/auth/login");
     } catch (e: any) {
       console.log(e.response?.message || 'Logout error');
     }
