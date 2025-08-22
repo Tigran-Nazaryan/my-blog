@@ -4,6 +4,7 @@ import "./globals.css";
 import '@ant-design/v5-patch-for-react-19';
 import {AntdRegistry} from "@ant-design/nextjs-registry";
 import {AuthProvider} from "@/store/store";
+import {FollowProvider} from "@/store/FollowContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,9 @@ export default function RootLayout({
     <body className={`${geistSans.variable} ${geistMono.variable}`}>
     <AntdRegistry>
       <AuthProvider>
-        {children}
+        <FollowProvider>
+          {children}
+        </FollowProvider>
       </AuthProvider>
     </AntdRegistry>
     </body>

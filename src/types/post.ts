@@ -1,3 +1,10 @@
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  isFollowing?: boolean;
+}
+
 export interface Post {
   id: string;
   title: string;
@@ -6,6 +13,7 @@ export interface Post {
   author: string;
   userId: number;
   createdAt: string;
+  user?: User;
 }
 
 export interface Author {

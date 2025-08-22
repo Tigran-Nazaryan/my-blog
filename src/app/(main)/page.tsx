@@ -13,7 +13,7 @@ import {useAuth} from "@/store/store";
 import {useRouter} from "next/navigation";
 
 export default function Home() {
-  const {checkAuth, isAuth, isLoading, user} = useAuth();
+  const {checkAuth, isAuth, isLoading} = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -54,8 +54,6 @@ export default function Home() {
     }
   }, [isAuth]);
 
-  console.log(posts)
-
   async function handleCreatePost() {
     if (!newPostTitle || !newPostBody) {
       toast.error("The title and text cannot be empty.");
@@ -70,9 +68,8 @@ export default function Home() {
         author: "Admin",
         avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
       });
-      console.log("Creating post with data:", newPost);
-      setPosts([newPost, ...posts]);
 
+      setPosts([newPost, ...posts]);
       setCreateModalOpen(false);
       setNewPostTitle('');
       setNewPostBody('');
