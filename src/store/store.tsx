@@ -1,7 +1,7 @@
 "use client";
 
 import React, {createContext, useState, useContext, ReactNode} from 'react';
-import AuthService from '@/services/AuthService';
+import AuthService from '@/services/authService';
 import { IUser } from '@/models/Iuser';
 import { useRouter } from "next/navigation";
 import Cookies from 'js-cookie';

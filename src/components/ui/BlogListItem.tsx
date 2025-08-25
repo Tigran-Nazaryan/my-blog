@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import EditPostModal from "@/components/ui/modals/EditPostModal";
 import { followUser, unfollowUser } from "@/services/followsService";
 import {useFollowContext} from "@/store/FollowContext";
+import CommentSection from "@/components/ui/CommentSection";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -163,6 +164,7 @@ export function BlogListItem({ post }: { post: Post }) {
             )
           }
         </div>
+        <CommentSection postId={Number(post.id)} userId={localPost.userId} />
       </Card>
 
       {editModalOpen && (

@@ -1,20 +1,30 @@
-import { NextResponse, NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const pathname = request.nextUrl.pathname;
 
-  if (!token) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
-  } else {
-    if (pathname === "/auth/login") {
-      return NextResponse.redirect(new URL('/', request.url));
+  // Разрешить доступ без токена к страницам логина и регистрации
+  if (pathname === "/auth/login" || pathname === "/auth/registration") {
+    if (token) {
+      // Уже залогинен? Отправь на главную
+      return NextResponse.redirect(new URL("/", request.url));
     }
+    return NextResponse.next(); // Пускаем
+  }
+
+  // Все остальные страницы требуют токен
+  if (!token) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   return NextResponse.next();
 }
 
+
 export const config = {
-  matcher: ["/", "/blog/:path*", "/authors/:path*", "/auth/login"],
+  matcher: ["/((?!_next|api|static|favicon.ico).*)"],
 };
+
+
+

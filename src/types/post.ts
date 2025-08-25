@@ -23,3 +23,15 @@ export interface Author {
   email: string;
   posts: Post[];
 }
+
+export type Comment = {
+  id: number;
+  postId: number;
+  content: string;
+  user: {
+    id: number;
+    firstName: string;
+    lastName: string;
+  };
+  userId: number;
+};
