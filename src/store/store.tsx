@@ -89,9 +89,14 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
+      const data = await res.json();
+      if (!data.user) throw new Error('No user data');
+
+      setUser(data.user);
       setIsAuth(true);
     } catch (e: any) {
       console.log(e);
+      setUser(null);
       setIsAuth(false);
     } finally {
       setIsLoading(false);

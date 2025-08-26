@@ -1,29 +1,16 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { getCommentsByPost, createComment } from "@/services/commentService";
+import { useState } from "react";
+import { createComment } from "@/services/commentService";
 import { Input, Button, List, Typography } from "antd";
 import {Comment} from "@/types/post";
 
 const { TextArea } = Input;
 
-export default function CommentSection({ postId, userId }: { postId: number; userId: number }) {
-  const [comments, setComments] = useState<Comment[]>([]);
+export default function CommentSection({ postId, userId, initialComments = [] }: { postId: number; userId: number; initialComments?: Comment[]; }) {
+  const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    loadComments();
-  }, [postId]);
-
-  const loadComments = async () => {
-    try {
-      const data = await getCommentsByPost(postId);
-      setComments(data);
-    } catch (err) {
-      console.error("Failed to load comments", err);
-    }
-  };
 
   const handleSubmit = async () => {
     if (!newComment.trim()) return;
@@ -39,8 +26,6 @@ export default function CommentSection({ postId, userId }: { postId: number; use
       setLoading(false);
     }
   };
-
-  console.log("commetn arr" ,comments)
 
   return (
     <div style={{ marginTop: "2rem" }}>

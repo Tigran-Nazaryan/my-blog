@@ -1,19 +1,19 @@
 'use client';
 
 import {useEffect, useState} from "react";
-import {BlogListItem} from "@/components/ui/BlogListItem";
-import {createPost} from "@/services/postServices";
+import {BlogListItem} from "@/components/ui/blogListItem/BlogListItem";
+import {createPost, getPostsWithComments} from "@/services/postServices";
 import {Button, Spin} from "antd";
 import {Post} from "@/types/post";
-import {fetchPosts} from "@/lib/db";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
 import CreatePostModal from "@/components/ui/modals/CreatePostModal";
 import {useAuth} from "@/store/store";
 import {useRouter} from "next/navigation";
+import "./style/page.style.css";
 
 export default function Home() {
-  const {checkAuth, isAuth, isLoading} = useAuth();
+  const {checkAuth, isAuth, isLoading, user} = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -37,20 +37,12 @@ export default function Home() {
   const [createLoading, setCreateLoading] = useState(false);
 
   useEffect(() => {
-    if (isAuth) {
-      async function getPosts() {
-        setLoading(true);
-        try {
-          const fetchedPosts = await fetchPosts();
-          setPosts(fetchedPosts);
-        } catch (err) {
-          toast.error("Failed to fetch posts");
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      getPosts();
+    if (isAuth && user?.id) {
+      setLoading(true);
+      getPostsWithComments(user.id)
+        .then(setPosts)
+        .catch(() => toast.error("Failed to fetch posts"))
+        .finally(() => setLoading(false));
     }
   }, [isAuth]);
 
@@ -94,9 +86,11 @@ export default function Home() {
         </Button>
       </div>
 
-      {posts.map((post) => (
-        <BlogListItem key={post.id} post={post}/>
-      ))}
+      <div className="blog-items-container">
+        {posts.map((post) => (
+          <BlogListItem key={post.id} post={post} currentUserId={user?.id ?? null}/>
+        ))}
+      </div>
 
       <CreatePostModal
         open={createModalOpen}

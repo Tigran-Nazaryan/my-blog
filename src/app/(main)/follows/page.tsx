@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import {getFollowsPosts} from "@/services/followsService";
 import type {Post} from "@/types/post";
-import {BlogListItem} from "@/components/ui/BlogListItem";
+import {BlogListItem} from "@/components/ui/blogListItem/BlogListItem";
 
 export default function FollowsPage() {
   const [posts, setPosts] = useState<Post[]>([]);

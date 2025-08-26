@@ -14,6 +14,7 @@ export interface Post {
   userId: number;
   createdAt: string;
   user?: User;
+  comments?: Comment[];
 }
 
 export interface Author {

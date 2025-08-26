@@ -1,40 +1,33 @@
 'use client';
 
-import { Card, Typography, Button, Modal } from 'antd';
+import {Card, Typography, Button, Modal} from 'antd';
+import {MessageOutlined} from '@ant-design/icons';
 import Link from 'next/link';
-import { Post } from "@/types/post";
+import {Post} from "@/types/post";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { deletePost } from "@/services/postServices";
-import { toast } from "react-toastify";
+import {useEffect, useState} from "react";
+import {deletePost} from "@/services/postServices";
+import {toast} from "react-toastify";
 import EditPostModal from "@/components/ui/modals/EditPostModal";
-import { followUser, unfollowUser } from "@/services/followsService";
+import {followUser, unfollowUser} from "@/services/followsService";
 import {useFollowContext} from "@/store/FollowContext";
 import CommentSection from "@/components/ui/CommentSection";
+import "./style/blogListItem.style.css";
 
-const { Title, Paragraph, Text } = Typography;
+const {Title, Paragraph, Text} = Typography;
 
-export function BlogListItem({ post }: { post: Post }) {
+export function BlogListItem({post, currentUserId}: { post: Post; currentUserId?: string | null }) {
   const [localPost, setLocalPost] = useState(post);
   const [deleted, setDeleted] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const [modal, contextHolder] = Modal.useModal();
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
-  const { followMap, updateFollowStatus } = useFollowContext();
+  const {followMap, updateFollowStatus} = useFollowContext();
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        setCurrentUserId(parsed.id);
-      } catch (e) {
-        console.error('Failed to parse user from localStorage', e);
-      }
-    }
-  }, []);
+  const isAuthor = String(currentUserId) === String(post.userId);
+
 
   useEffect(() => {
     if (followMap[post.userId] !== undefined) {
@@ -47,8 +40,6 @@ export function BlogListItem({ post }: { post: Post }) {
       }));
     }
   }, [followMap, post.userId]);
-
-  const isAuthor = currentUserId === post.userId;
 
   const handleFollow = async () => {
     setLoading(true);
@@ -116,55 +107,71 @@ export function BlogListItem({ post }: { post: Post }) {
   return (
     <>
       {contextHolder}
-      <Card style={{ marginBottom: '1rem' }} className="blog-card-container" hoverable>
+      <Card style={{marginBottom: '1rem'}} className="blog-card-container">
         <Link href={`/blog/${localPost.id}`}>
-          <Title level={4} style={{ marginBottom: 0 }}>
+          <Title level={4} style={{marginBottom: 0}}>
             {localPost.title}
           </Title>
         </Link>
 
-        <Paragraph style={{ marginTop: '0.5rem' }}>
+        <Paragraph style={{marginTop: '0.5rem'}}>
           {localPost.body.length > 100
             ? `${localPost.body.slice(0, 100)}...`
             : localPost.body}
         </Paragraph>
 
-        <Text type="secondary">
-          Author: <Link href={`/authors/${localPost.userId}`}>{localPost.author}</Link>
-          {
-            !isAuthor && (
-              <Button
-                size="small"
-                onClick={handleFollow}
-                loading={loading}
-                style={{ marginLeft: 8 }}
-              >
-                {localPost.user?.isFollowing ? "Unsubscribe" : "Subscribe"}
-              </Button>
-            )
-          }
-        </Text>
+        <div className="author-info">
+          <Link href={`/authors/${localPost.userId}`}>
+            <Image
+              src={localPost.avatar as string}
+              width={40}
+              height={40}
+              alt={`Avatar of ${localPost.author}`}
+              className="rounded-full"
+              style={{borderRadius: "50%"}}
+            />
+          </Link>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
-          <Image
-            src={localPost.avatar as string}
-            width={40}
-            height={40}
-            alt={`Avatar of ${localPost.author}`}
-            style={{ borderRadius: '50%', marginBottom: 8 }}
-            className="rounded-full"
-          />
+          <Link href={`/authors/${localPost.userId}`}>
+            <Text type="secondary">{localPost.author}</Text>
+          </Link>
 
-          {
-            isAuthor && (
-              <>
-                <Button type="link" onClick={() => setEditModalOpen(true)}>Edit</Button>
-                <Button type="link" danger onClick={showDeleteConfirm} loading={loading}>Delete</Button>
-              </>
-            )
-          }
+          {!isAuthor && (
+            <Button
+              size="small"
+              onClick={handleFollow}
+              loading={loading}
+              style={{marginLeft: "auto"}}
+            >
+              {localPost.user?.isFollowing ? "Unsubscribe" : "Subscribe"}
+            </Button>
+          )}
         </div>
-        <CommentSection postId={Number(post.id)} userId={localPost.userId} />
+
+        <div style={{display: 'flex', alignItems: 'center', gap: 8, marginTop: 12}}>
+          <Button
+            type="text"
+            icon={<MessageOutlined/>}
+            onClick={() => setShowComments(prev => !prev)}
+          >
+            {localPost.comments?.length ?? 0} Comments
+          </Button>
+
+          {isAuthor && (
+            <>
+              <Button type="link" onClick={() => setEditModalOpen(true)}>Edit</Button>
+              <Button type="link" danger onClick={showDeleteConfirm} loading={loading}>Delete</Button>
+            </>
+          )}
+        </div>
+
+        {showComments && (
+          <CommentSection
+            postId={Number(post.id)}
+            userId={localPost.userId}
+            initialComments={localPost.comments || []}
+          />
+        )}
       </Card>
 
       {editModalOpen && (
