@@ -1,11 +1,11 @@
 'use client';
 
-import {Card, Typography, Button, Modal} from 'antd';
-import {MessageOutlined} from '@ant-design/icons';
+import {Card, Typography, Button, Modal, Dropdown} from 'antd';
+import {EllipsisOutlined, MessageOutlined} from '@ant-design/icons';
 import Link from 'next/link';
 import {Post} from "@/types/post";
 import Image from "next/image";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {deletePost} from "@/services/postServices";
 import {toast} from "react-toastify";
 import EditPostModal from "@/components/ui/modals/EditPostModal";
@@ -16,18 +16,15 @@ import "./style/blogListItem.style.css";
 
 const {Title, Paragraph, Text} = Typography;
 
-export function BlogListItem({post, currentUserId}: { post: Post; currentUserId?: string | null }) {
+const BlogListItem = ({post, currentUserId, onDelete}: { post: Post; currentUserId?: string | null;  onDelete?: () => void }) => {
   const [localPost, setLocalPost] = useState(post);
-  const [deleted, setDeleted] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [modal, contextHolder] = Modal.useModal();
-
   const {followMap, updateFollowStatus} = useFollowContext();
 
   const isAuthor = String(currentUserId) === String(post.userId);
-
 
   useEffect(() => {
     if (followMap[post.userId] !== undefined) {
@@ -43,6 +40,7 @@ export function BlogListItem({post, currentUserId}: { post: Post; currentUserId?
 
   const handleFollow = async () => {
     setLoading(true);
+
     try {
       const isFollowing = localPost.user?.isFollowing;
 
@@ -82,34 +80,54 @@ export function BlogListItem({post, currentUserId}: { post: Post; currentUserId?
     modal.confirm({
       title: 'Are you sure you want to delete this post?',
       content: 'This action cannot be undone.',
-      okText: 'Yes, Delete',
+      okText: 'Delete',
       okType: 'danger',
       cancelText: 'Cancel',
-      onOk() {
-        setLoading(true);
-        return deletePost(localPost.id)
-          .then(() => {
-            setDeleted(true);
-            toast.success("Post deleted");
-          })
-          .catch(() => {
-            toast.error("Failed to delete post");
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+      onOk: async () => {
+        try {
+          setLoading(true);
+          await deletePost(localPost.id);
+          toast.success("Post deleted");
+          if (onDelete) onDelete();
+        } catch (error) {
+          toast.error("Failed to delete post");
+        } finally {
+          setLoading(false);
+        }
       },
     });
   };
 
-  if (deleted) return null;
+  const dropdownItems = [
+    {
+      key: 'edit',
+      label: 'Edit',
+      onClick: () => setEditModalOpen(true),
+    },
+    {
+      key: 'delete',
+      label: 'Delete',
+      danger: true,
+      onClick: showDeleteConfirm,
+    },
+  ];
 
   return (
     <>
       {contextHolder}
-      <Card style={{marginBottom: '1rem'}} className="blog-card-container">
+      <Card
+        style={{marginBottom: '1rem'}}
+        className="blog-card-container"
+        extra={
+          isAuthor && (
+            <Dropdown menu={{items: dropdownItems}} trigger={['click']}>
+              <Button type="text" icon={<EllipsisOutlined/>}/>
+            </Dropdown>
+          )
+        }
+      >
         <Link href={`/blog/${localPost.id}`}>
-          <Title level={4} style={{marginBottom: 0}}>
+          <Title level={4}>
             {localPost.title}
           </Title>
         </Link>
@@ -156,13 +174,6 @@ export function BlogListItem({post, currentUserId}: { post: Post; currentUserId?
           >
             {localPost.comments?.length ?? 0} Comments
           </Button>
-
-          {isAuthor && (
-            <>
-              <Button type="link" onClick={() => setEditModalOpen(true)}>Edit</Button>
-              <Button type="link" danger onClick={showDeleteConfirm} loading={loading}>Delete</Button>
-            </>
-          )}
         </div>
 
         {showComments && (
@@ -184,4 +195,6 @@ export function BlogListItem({post, currentUserId}: { post: Post; currentUserId?
       )}
     </>
   );
-}
+};
+
+export default React.memo(BlogListItem);

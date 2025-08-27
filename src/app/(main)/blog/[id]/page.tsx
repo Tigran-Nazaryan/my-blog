@@ -5,6 +5,7 @@ import { getPostById } from "@/lib/db";
 import { Post } from "@/types/post";
 import PostContent from "@/components/ui/PostContent";
 import { useParams } from "next/navigation";
+import {Spin} from "antd";
 
 export default function PostPage() {
   const { id } = useParams();
@@ -26,7 +27,7 @@ export default function PostPage() {
     }
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Spin />;
   if (error || !post) return <div>{error || "Post not found"}</div>;
 
   return <PostContent post={post} />;

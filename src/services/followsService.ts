@@ -1,5 +1,5 @@
-import { apiRequest } from "@/lib/apiRequest";
-import type { Post } from "@/types/post";
+import {apiRequest} from "@/lib/apiRequest";
+import type {Post} from "@/types/post";
 
 export const getFollowsPosts = async (): Promise<Post[]> => {
   try {
@@ -20,7 +20,11 @@ export const unfollowUser = async (authorId: number): Promise<void> => {
   await apiRequest(`/api/follows/${authorId}`, { method: "DELETE" });
 };
 
-export const checkIfFollowing = async (authorId: number): Promise<boolean> => {
-  const res = await apiRequest<{ following: boolean }>(`/api/follows/check/${authorId}`);
-  return res.following;
-};
+export async function fetchFollows(): Promise<Post[]> {
+  try {
+    return await getFollowsPosts();
+  } catch (error) {
+    console.error("Error fetching follows:", error);
+    return [];
+  }
+}

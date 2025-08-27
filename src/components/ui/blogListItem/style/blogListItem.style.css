@@ -1,9 +1,7 @@
 .blog-card-container {
     min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     overflow: hidden;
+    margin-bottom: 1rem;
 }
 
 .author-info {

@@ -1,36 +1,33 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import {getFollowsPosts} from "@/services/followsService";
+import {fetchFollows} from "@/services/followsService";
 import type {Post} from "@/types/post";
-import {BlogListItem} from "@/components/ui/blogListItem/BlogListItem";
+import BlogListItem from "@/components/ui/blogListItem/BlogListItem";
+import './style/follows.style.css'
+import {Spin} from "antd";
 
 export default function FollowsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFollows = async () => {
-      try {
-        const follows = await getFollowsPosts();
-        setPosts(follows);
-      } catch (e) {
-        console.error("Error fetching follows:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFollows();
+    fetchFollows()
+      .then(setPosts)
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) return <Spin />;
 
   return (
     <div>
       <h1>Posts from Authors You Follow</h1>
 
-      {posts.map((post) => (
-        <BlogListItem key={post.id} post={post} />
-      ))}
+      <div className="blog-items-container">
+        {posts.map((post) => (
+          <BlogListItem key={post.id} post={post}/>
+        ))}
+      </div>
     </div>
   );
 }
