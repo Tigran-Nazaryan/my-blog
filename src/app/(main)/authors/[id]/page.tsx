@@ -6,12 +6,14 @@ import {Author} from "@/types/post";
 import {getAuthorById} from "@/services/authorService";
 import {Spin} from "antd";
 import BlogListItem from "@/components/ui/blogListItem/BlogListItem";
+import {useAuth} from "@/store/store";
 
 export default function AuthorPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   const [author, setAuthor] = useState<Author | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!id) return;
@@ -30,7 +32,7 @@ export default function AuthorPage() {
       <h2>Posts</h2>
       {
         author.posts?.map(post => (
-          <BlogListItem key={post.id} post={post} />
+          <BlogListItem key={post.id} post={post} currentUserId={user?.id} />
         ))
       }
     </div>

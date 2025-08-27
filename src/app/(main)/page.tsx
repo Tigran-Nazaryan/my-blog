@@ -41,7 +41,6 @@ export default function Home() {
     setPosts(prevPosts => [newPost, ...prevPosts]);
   };
 
-
   const handleDeletePost = (postId: string) => {
     setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
   };
