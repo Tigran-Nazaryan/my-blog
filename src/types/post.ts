@@ -15,8 +15,8 @@ export interface Post {
   createdAt: string;
   user?: User;
   comments?: Comment[];
-  likesCount: number;
-  isLiked: boolean;
+  likesCount?: number;
+  isLiked?: boolean;
 }
 
 export interface Author {
@@ -38,4 +38,6 @@ export type Comment = {
     lastName: string;
   };
   userId: number;
+  likesCount: number;
+  isLiked: boolean;
 };

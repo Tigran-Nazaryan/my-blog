@@ -30,7 +30,7 @@ export default function Home() {
       router.push("/auth/login");
     } else if (user?.id) {
       setLoading(true);
-      getPosts(user.id)
+      getPosts()
         .then(setPosts)
         .catch(() => toast.error("Failed to fetch posts"))
         .finally(() => setLoading(false));

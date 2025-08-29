@@ -4,6 +4,7 @@ import React from 'react';
 import { Form, Input, Button, List, Typography } from 'antd';
 import { createComment } from '@/services/commentService';
 import { Comment } from '@/types/post';
+import CommentLikeBtn from "@/components/ui/btn/CommentLikeBtn";
 
 const { TextArea } = Input;
 
@@ -42,7 +43,17 @@ export default function CommentSection({postId, userId, initialComments = []}: {
         dataSource={comments}
         bordered
         renderItem={(comment) => (
-          <List.Item key={comment.id}>
+          <List.Item
+            key={comment.id}
+            actions={[
+              <CommentLikeBtn
+                key="like"
+                commentId={comment.id}
+                initialCount={comment.likesCount ?? 0}
+                initialIsLiked={comment.isLiked ?? false}
+              />
+            ]}
+          >
             <List.Item.Meta
               title={`${comment.user?.firstName ?? ''} ${comment.user?.lastName ?? ''}`}
               description={comment.content}
@@ -50,6 +61,7 @@ export default function CommentSection({postId, userId, initialComments = []}: {
           </List.Item>
         )}
       />
+
 
       <Form form={form} layout="vertical" onFinish={handleFinish} style={{ marginTop: 16 }}>
         <Form.Item

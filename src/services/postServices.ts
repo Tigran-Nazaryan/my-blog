@@ -23,6 +23,6 @@ export function deletePost(id: string): Promise<boolean> {
   }).then(() => true);
 }
 
-export const getPosts = async (userId: string): Promise<Post[]> => {
-  return await apiRequest<Post[]>(`/api/posts/?userId=${userId}`);
+export const getPosts = async (): Promise<Post[]> => {
+  return await apiRequest<Post[]>(`/api/posts`);
 };

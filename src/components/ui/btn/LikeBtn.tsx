@@ -4,7 +4,6 @@ import {apiRequest} from "@/lib/apiRequest";
 import {Button} from "antd";
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 
-
 type Props = {
   postId: string;
   initialCount: number;

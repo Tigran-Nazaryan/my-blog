@@ -13,7 +13,7 @@ import {followUser, unfollowUser} from "@/services/followsService";
 import {useFollowContext} from "@/store/FollowContext";
 import CommentSection from "@/components/ui/CommentSection";
 import "./style/blogListItem.style.css";
-import LikeButton from "@/components/ui/LikeBtn";
+import LikeButton from "@/components/ui/btn/LikeBtn";
 
 const {Title, Paragraph, Text} = Typography;
 

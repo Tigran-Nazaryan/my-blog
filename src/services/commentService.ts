@@ -11,3 +11,15 @@ export async function createComment(postId: number, userId: number, content: str
     body: JSON.stringify({ postId, userId, content }),
   });
 }
+
+export async function likeComment(commentId: number) {
+  return await apiRequest(`/api/comments/${commentId}/like`, {
+    method: "POST",
+  });
+}
+
+export async function unlikeComment(commentId: number) {
+  return await apiRequest(`/api/comments/${commentId}/like`, {
+    method: "DELETE",
+  });
+}
