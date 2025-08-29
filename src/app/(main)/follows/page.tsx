@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import {fetchFollows} from "@/services/followsService";
 import type {Post} from "@/types/post";
-import BlogListItem from "@/components/ui/blogListItem/BlogListItem";
+import BlogListItem from "@/components/ui/blogListItem";
 import './style/follows.style.css'
 import {Spin} from "antd";
 

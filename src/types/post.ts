@@ -15,6 +15,8 @@ export interface Post {
   createdAt: string;
   user?: User;
   comments?: Comment[];
+  likesCount: number;
+  isLiked: boolean;
 }
 
 export interface Author {
@@ -23,6 +25,7 @@ export interface Author {
   lastName: string;
   email: string;
   posts: Post[];
+  isFollowing?: boolean;
 }
 
 export type Comment = {

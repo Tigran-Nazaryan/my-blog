@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import BlogListItem from "@/components/ui/blogListItem/BlogListItem";
-import { getPostsWithComments } from "@/services/postServices";
+import BlogListItem from "@/components/ui/blogListItem";
+import { getPosts } from "@/services/postServices";
 import { Button, Spin } from "antd";
 import { Post } from "@/types/post";
 import { toast } from "react-toastify";
@@ -30,7 +30,7 @@ export default function Home() {
       router.push("/auth/login");
     } else if (user?.id) {
       setLoading(true);
-      getPostsWithComments(user.id)
+      getPosts(user.id)
         .then(setPosts)
         .catch(() => toast.error("Failed to fetch posts"))
         .finally(() => setLoading(false));

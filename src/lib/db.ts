@@ -1,5 +1,4 @@
 import { Post } from "@/types/post";
-import {headers} from "next/headers";
 
 const API_BASE = process.env.NEXT_PUBLIC_BASE_URL;
 

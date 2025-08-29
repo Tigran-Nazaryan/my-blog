@@ -13,10 +13,16 @@ import {followUser, unfollowUser} from "@/services/followsService";
 import {useFollowContext} from "@/store/FollowContext";
 import CommentSection from "@/components/ui/CommentSection";
 import "./style/blogListItem.style.css";
+import LikeButton from "@/components/ui/LikeBtn";
 
 const {Title, Paragraph, Text} = Typography;
 
-const BlogListItem = ({post, currentUserId, onDelete}: { post: Post; currentUserId?: string | null;  onDelete?: () => void }) => {
+const Index = ({post, currentUserId, onDelete, isFollowing}: {
+  post: Post;
+  currentUserId?: string | null;
+  onDelete?: () => void,
+  isFollowing?: boolean;
+}) => {
   const [localPost, setLocalPost] = useState(post);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -25,6 +31,7 @@ const BlogListItem = ({post, currentUserId, onDelete}: { post: Post; currentUser
   const {followMap, updateFollowStatus} = useFollowContext();
 
   const isAuthor = String(currentUserId) === String(post.userId);
+  console.log('useEffect triggered, followMap:', followMap, 'post.userId:', post);
 
   useEffect(() => {
     if (followMap[post.userId] !== undefined) {
@@ -166,7 +173,7 @@ const BlogListItem = ({post, currentUserId, onDelete}: { post: Post; currentUser
           )}
         </div>
 
-        <div style={{display: 'flex', alignItems: 'center', gap: 8, marginTop: 12}}>
+        <div className="comment-reaction">
           <Button
             type="text"
             icon={<MessageOutlined/>}
@@ -174,6 +181,7 @@ const BlogListItem = ({post, currentUserId, onDelete}: { post: Post; currentUser
           >
             {localPost.comments?.length ?? 0} Comments
           </Button>
+          <LikeButton postId={localPost.id} initialCount={localPost.likesCount || 0} initialIsLiked={localPost.isLiked || false}/>
         </div>
 
         {showComments && (
@@ -197,4 +205,4 @@ const BlogListItem = ({post, currentUserId, onDelete}: { post: Post; currentUser
   );
 };
 
-export default React.memo(BlogListItem);
+export default React.memo(Index);

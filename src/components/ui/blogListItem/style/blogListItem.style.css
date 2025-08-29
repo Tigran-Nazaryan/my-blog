@@ -9,3 +9,9 @@
     align-items: center;
     gap: 1rem;
 }
+
+.comment-reaction {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

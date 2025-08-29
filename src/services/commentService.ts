@@ -6,7 +6,7 @@ export async function getCommentsByPost(postId: number): Promise<Comment[]> {
 }
 
 export async function createComment(postId: number, userId: number, content: string): Promise<Comment> {
-  return await apiRequest("/api/comments/comments", {
+  return await apiRequest("/api/comments", {
     method: "POST",
     body: JSON.stringify({ postId, userId, content }),
   });

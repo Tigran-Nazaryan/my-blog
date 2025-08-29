@@ -5,7 +5,7 @@ import React, {useEffect, useState} from "react";
 import {Author} from "@/types/post";
 import {getAuthorById} from "@/services/authorService";
 import {Spin} from "antd";
-import BlogListItem from "@/components/ui/blogListItem/BlogListItem";
+import BlogListItem from "@/components/ui/blogListItem";
 import {useAuth} from "@/store/store";
 
 export default function AuthorPage() {
