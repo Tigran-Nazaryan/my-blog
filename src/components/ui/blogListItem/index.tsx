@@ -31,7 +31,6 @@ const Index = ({post, currentUserId, onDelete, isFollowing}: {
   const {followMap, updateFollowStatus} = useFollowContext();
 
   const isAuthor = String(currentUserId) === String(post.userId);
-  console.log('useEffect triggered, followMap:', followMap, 'post.userId:', post);
 
   useEffect(() => {
     if (followMap[post.userId] !== undefined) {

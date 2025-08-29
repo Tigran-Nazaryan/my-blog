@@ -23,6 +23,7 @@ export function deletePost(id: string): Promise<boolean> {
   }).then(() => true);
 }
 
-export const getPosts = async (): Promise<Post[]> => {
-  return await apiRequest<Post[]>(`/api/posts`);
-};
+export async function getPosts(userId:string, search: string = ''): Promise<Post[]> {
+  const query = search ? `?search=${encodeURIComponent(search)}` : '';
+  return apiRequest(`/api/posts${query}`);
+}
