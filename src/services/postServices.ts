@@ -23,7 +23,16 @@ export function deletePost(id: string): Promise<boolean> {
   }).then(() => true);
 }
 
-export async function getPosts(userId:string, search: string = ''): Promise<Post[]> {
-  const query = search ? `?search=${encodeURIComponent(search)}` : '';
-  return apiRequest(`/api/posts${query}`);
+export async function getPosts(
+  userId: string,
+  search: string = '',
+  page: number = 0,
+  size: number = 10
+): Promise<{ posts: Post[]; totalPages: number; currentPage: number; }> {
+  const params = new URLSearchParams();
+  if (search) params.append('search', search);
+  params.append('page', page.toString());
+  params.append('size', size.toString());
+
+  return apiRequest(`/api/posts?${params.toString()}`);
 }
