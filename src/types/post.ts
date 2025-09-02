@@ -40,4 +40,9 @@ export type Comment = {
   userId: number;
   likesCount: number;
   isLiked: boolean;
+  parentId: number
 };
+
+export interface CommentWithReplies extends Comment {
+  replies: CommentWithReplies[];
+}

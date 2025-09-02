@@ -1,12 +1,20 @@
 'use client';
 
 import React from 'react';
-import { Form, Input, Button, List, Typography } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  List,
+  Typography,
+} from 'antd';
 import { createComment } from '@/services/commentService';
 import { Comment } from '@/types/post';
-import CommentLikeBtn from "@/components/ui/btn/CommentLikeBtn";
+import CommentItem from "@/components/CommentItem";
 
 const { TextArea } = Input;
+
+type CommentWithReplies = Comment & { replies: CommentWithReplies[] };
 
 export default function CommentSection({postId, userId, initialComments = []}: {
   postId: number;
@@ -16,6 +24,34 @@ export default function CommentSection({postId, userId, initialComments = []}: {
   const [comments, setComments] = React.useState<Comment[]>(initialComments);
   const [loading, setLoading] = React.useState(false);
   const [form] = Form.useForm();
+  const [replyToId, setReplyToId] = React.useState<number | null>(null);
+  const [activeKeys, setActiveKeys] = React.useState<string[]>([]);
+
+  const buildCommentsTree = (flatComments: Comment[]): CommentWithReplies[] => {
+    const map = new Map<number, CommentWithReplies>();
+    const roots: CommentWithReplies[] = [];
+
+    flatComments.forEach((comment) => {
+      map.set(comment.id, { ...comment, replies: [] });
+    });
+
+    map.forEach((comment) => {
+      if (comment.parentId) {
+        const parent = map.get(comment.parentId);
+        if (parent) {
+          parent.replies.push(comment);
+        } else {
+          roots.push(comment);
+        }
+      } else {
+        roots.push(comment);
+      }
+    });
+
+    return roots;
+  };
+
+  const commentsTree = buildCommentsTree(comments);
 
   const handleFinish = async (values: { content: string }) => {
     const { content } = values;
@@ -24,9 +60,23 @@ export default function CommentSection({postId, userId, initialComments = []}: {
 
     setLoading(true);
     try {
-      const created = await createComment(postId, userId, content);
+      const dataToSend = {
+        postId,
+        userId,
+        content,
+        ...(replyToId !== null ? { parentId: replyToId } : {}),
+      };
+
+      const created = await createComment(dataToSend);
+
       setComments((prev) => [...prev, created]);
       form.resetFields();
+      setReplyToId(null);
+      setActiveKeys((prev) =>
+        replyToId !== null
+          ? [...prev, created.parentId?.toString() || created.id.toString()]
+          : prev
+      );
     } catch (err) {
       console.error('Failed to add comment', err);
     } finally {
@@ -34,49 +84,87 @@ export default function CommentSection({postId, userId, initialComments = []}: {
     }
   };
 
+  const replyingToComment = comments.find((c) => c.id === replyToId);
+
+  const renderReplies = (comment: CommentWithReplies) => (
+    <CommentItem
+      key={comment.id}
+      comment={comment}
+      activeKeys={activeKeys}
+      setActiveKeys={setActiveKeys}
+      setReplyToId={setReplyToId}
+      renderReplies={renderReplies}
+    />
+  );
+
   return (
     <div style={{ marginTop: '2rem' }}>
       <Typography.Title level={4}>Comments</Typography.Title>
 
       <List
-        rowKey={(comment) => comment.id}
-        dataSource={comments}
-        bordered
+        style={{ width: '100%' }}
+        rowKey="id"
+        dataSource={commentsTree}
+        bordered={false}
         renderItem={(comment) => (
-          <List.Item
-            key={comment.id}
-            actions={[
-              <CommentLikeBtn
-                key="like"
-                commentId={comment.id}
-                initialCount={comment.likesCount ?? 0}
-                initialIsLiked={comment.isLiked ?? false}
-              />
-            ]}
-          >
-            <List.Item.Meta
-              title={`${comment.user?.firstName ?? ''} ${comment.user?.lastName ?? ''}`}
-              description={comment.content}
+          <List.Item key={comment.id} style={{ border: 'none' }}>
+            <CommentItem
+              comment={comment}
+              activeKeys={activeKeys}
+              setActiveKeys={setActiveKeys}
+              setReplyToId={setReplyToId}
+              renderReplies={renderReplies}
             />
           </List.Item>
         )}
       />
 
+      <div>
+        {replyToId && (
+          <div
+            style={{
+              backgroundColor: '#f0f5ff',
+              border: '1px solid #91d5ff',
+              borderRadius: 6,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '8px 12px',
+            }}
+          >
+            <div>
+              <Typography.Text>
+                Replying to{' '}
+                <Typography.Text strong>
+                  {replyingToComment
+                    ? `${replyingToComment.user?.firstName ?? ''} ${
+                      replyingToComment.user?.lastName ?? ''
+                    }`
+                    : `comment #${replyToId}`}
+                </Typography.Text>
+              </Typography.Text>
+            </div>
+            <Button type="text" onClick={() => setReplyToId(null)}>
+              Cancel
+            </Button>
+          </div>
+        )}
 
-      <Form form={form} layout="vertical" onFinish={handleFinish} style={{ marginTop: 16 }}>
-        <Form.Item
-          name="content"
-          rules={[{ required: true, message: 'Please write a comment' }]}
-        >
-          <TextArea rows={3} placeholder="Write your comment..." />
-        </Form.Item>
+        <Form form={form} layout="vertical" onFinish={handleFinish} style={{ marginTop: 16 }}>
+          <Form.Item
+            name="content"
+            rules={[{ required: true, message: 'Please write a comment' }]}
+          >
+            <TextArea rows={3} placeholder="Write your comment..." />
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" onClick={() => form.submit()} loading={loading}>
-            Post Comment
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item>
+            <Button type="primary" onClick={() => form.submit()} loading={loading} block>
+              {replyToId ? 'Post Reply' : 'Post Comment'}
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }

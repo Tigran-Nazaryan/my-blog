@@ -21,7 +21,7 @@ export default function FollowsPage() {
 
   return (
     <div>
-      <h1>Posts from Authors You Follow</h1>
+      <h1 style={{textAlign:'center'}}>Posts from Authors You Follow</h1>
 
       <div className="blog-items-container">
         {posts.map((post) => (
