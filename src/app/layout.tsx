@@ -32,7 +32,7 @@ export default function RootLayout({
     <AntdRegistry>
       <AuthProvider>
         <FollowProvider>
-          {children}
+            {children}
         </FollowProvider>
       </AuthProvider>
     </AntdRegistry>

@@ -4,10 +4,12 @@ import {Card, Typography, Button, Space} from 'antd';
 import Link from 'next/link';
 import {Post} from '@/types/post';
 import Image from "next/image";
+import {useRouter} from "next/navigation";
 
 const {Title, Paragraph, Text} = Typography;
 
 export default function PostContent({post}: { post: Post }) {
+  const router = useRouter();
   return (
     <div>
       <Card style={{maxWidth: 800}}>
@@ -31,9 +33,10 @@ export default function PostContent({post}: { post: Post }) {
             </Link>
           </div>
           <Paragraph>{post.body}</Paragraph>
-          <Link href="/">
-            <Button type="primary">← Back to posts</Button>
-          </Link>
+
+          <Button type="primary" onClick={() => router.back()}>
+            ← Back
+          </Button>
         </Space>
       </Card>
     </div>

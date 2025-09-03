@@ -1,19 +1,19 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import BlogListItem from "@/components/ui/blogListItem";
 import SearchInput from "@/components/ui/SearchInput";
-import { getPosts } from "@/services/postServices";
-import { Button, Pagination, Spin } from "antd";
-import { Post } from "@/types/post";
-import { toast } from "react-toastify";
+import {getPosts} from "@/services/postServices";
+import {Button, Pagination, Spin} from "antd";
+import {Post} from "@/types/post";
+import {toast} from "react-toastify";
 import CreatePostModal from "@/components/ui/modals/CreatePostModal";
-import { useAuth } from "@/store/store";
-import { useRouter } from "next/navigation";
+import {useAuth} from "@/store/store";
+import {useRouter} from "next/navigation";
 import "./style/page.style.css";
 
 export default function Home() {
-  const { checkAuth, isAuth, isLoading, user } = useAuth();
+  const {checkAuth, isAuth, isLoading, user} = useAuth();
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -42,7 +42,7 @@ export default function Home() {
 
   const fetchPosts = (query: string, pageNumber: number) => {
     setLoading(true);
-    getPosts(user!.id, query, pageNumber, pageSize)
+    getPosts(user!.id, query, pageNumber)
       .then((data) => {
         setPosts(data.posts);
         setTotalPages(data.totalPages);
@@ -58,7 +58,7 @@ export default function Home() {
     setPage(1);
     setIsFetching(true);
 
-    getPosts(user.id, query.trim(), 1, pageSize)
+    getPosts(user.id, query.trim(), 1)
       .then((data) => {
         setPosts(data.posts);
         setTotalPages(data.totalPages);
@@ -74,7 +74,7 @@ export default function Home() {
     setPage(1);
     setIsFetching(true);
 
-    getPosts(user.id, "", 1, pageSize)
+    getPosts(user.id, "", 1)
       .then((data) => {
         setPosts(data.posts);
         setTotalPages(data.totalPages);
@@ -84,7 +84,7 @@ export default function Home() {
   };
 
   const handlePostCreated = (newPost: Post) => {
-    setPosts((prev) => [newPost, ...prev]);
+    setPosts((prev) => [newPost, ...prev.slice(0, -1)]);
   };
 
   const handleDeletePost = (postId: string) => {
@@ -92,21 +92,21 @@ export default function Home() {
   };
 
   if (loading) {
-    return <Spin size="large" className="loading-spinner" />;
+    return <Spin size="large" className="loading-spinner"/>;
   }
 
   return (
     <div>
-      <SearchInput onSearch={handleSearch} onReset={handleReset} />
+      <SearchInput onSearch={handleSearch} onReset={handleReset}/>
 
-      <div style={{ marginBottom: "1rem" }}>
+      <div style={{marginBottom: "1rem"}}>
         <Button type="primary" onClick={() => setCreateModalOpen(true)}>
           Create new Post
         </Button>
       </div>
 
       {isFetching ? (
-        <Spin size="large" />
+        <Spin size="large"/>
       ) : (
         <div className="blog-items-container">
           {posts.length > 0 ? (
@@ -130,7 +130,7 @@ export default function Home() {
         onCancel={() => setCreateModalOpen(false)}
       />
 
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+      <div style={{display: "flex", justifyContent: "center", marginTop: 16}}>
         <Pagination
           current={page}
           pageSize={pageSize}

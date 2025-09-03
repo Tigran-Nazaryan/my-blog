@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {
   Form,
   Input,
@@ -9,17 +9,18 @@ import {
   Typography,
 } from 'antd';
 import { createComment } from '@/services/commentService';
-import { Comment } from '@/types/post';
+import {Comment, Post} from '@/types/post';
 import CommentItem from "@/components/CommentItem";
 
 const { TextArea } = Input;
 
 type CommentWithReplies = Comment & { replies: CommentWithReplies[] };
 
-export default function CommentSection({postId, userId, initialComments = []}: {
+export default function CommentSection({postId, userId, initialComments = [], setLocalPostAction}: {
   postId: number;
   userId: number;
   initialComments?: Comment[];
+  setLocalPostAction: Dispatch<SetStateAction<Post>>;
 }) {
   const [comments, setComments] = React.useState<Comment[]>(initialComments);
   const [loading, setLoading] = React.useState(false);
@@ -55,14 +56,12 @@ export default function CommentSection({postId, userId, initialComments = []}: {
 
   const handleFinish = async (values: { content: string }) => {
     const { content } = values;
-
     if (!content.trim()) return;
 
     setLoading(true);
     try {
       const dataToSend = {
         postId,
-        userId,
         content,
         ...(replyToId !== null ? { parentId: replyToId } : {}),
       };
@@ -70,6 +69,12 @@ export default function CommentSection({postId, userId, initialComments = []}: {
       const created = await createComment(dataToSend);
 
       setComments((prev) => [...prev, created]);
+
+      setLocalPostAction(prev => ({
+        ...prev,
+        comments: [...(prev.comments || []), created],
+      }));
+
       form.resetFields();
       setReplyToId(null);
       setActiveKeys((prev) =>
@@ -84,6 +89,7 @@ export default function CommentSection({postId, userId, initialComments = []}: {
     }
   };
 
+
   const replyingToComment = comments.find((c) => c.id === replyToId);
 
   const renderReplies = (comment: CommentWithReplies) => (
@@ -94,6 +100,7 @@ export default function CommentSection({postId, userId, initialComments = []}: {
       setActiveKeys={setActiveKeys}
       setReplyToId={setReplyToId}
       renderReplies={renderReplies}
+      isReply={true}
     />
   );
 
@@ -114,6 +121,7 @@ export default function CommentSection({postId, userId, initialComments = []}: {
               setActiveKeys={setActiveKeys}
               setReplyToId={setReplyToId}
               renderReplies={renderReplies}
+              isReply={false}
             />
           </List.Item>
         )}

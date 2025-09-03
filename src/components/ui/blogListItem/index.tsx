@@ -17,7 +17,7 @@ import LikeButton from "@/components/ui/btn/LikeBtn";
 
 const {Title, Paragraph, Text} = Typography;
 
-const Index = ({post, currentUserId, onDelete, isFollowing}: {
+const Index = ({post, currentUserId, onDelete}: {
   post: Post;
   currentUserId?: string | null;
   onDelete?: () => void,
@@ -29,6 +29,8 @@ const Index = ({post, currentUserId, onDelete, isFollowing}: {
   const [showComments, setShowComments] = useState(false);
   const [modal, contextHolder] = Modal.useModal();
   const {followMap, updateFollowStatus} = useFollowContext();
+
+  console.log('post', post)
 
   const isAuthor = String(currentUserId) === String(post.userId);
 
@@ -188,6 +190,7 @@ const Index = ({post, currentUserId, onDelete, isFollowing}: {
             postId={Number(post.id)}
             userId={localPost.userId}
             initialComments={localPost.comments || []}
+            setLocalPostAction={setLocalPost}
           />
         )}
       </Card>
