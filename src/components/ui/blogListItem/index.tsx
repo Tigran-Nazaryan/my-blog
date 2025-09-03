@@ -30,8 +30,6 @@ const Index = ({post, currentUserId, onDelete}: {
   const [modal, contextHolder] = Modal.useModal();
   const {followMap, updateFollowStatus} = useFollowContext();
 
-  console.log('post', post)
-
   const isAuthor = String(currentUserId) === String(post.userId);
 
   useEffect(() => {

@@ -62,6 +62,7 @@ export default function CommentSection({postId, userId, initialComments = [], se
     try {
       const dataToSend = {
         postId,
+        userId,
         content,
         ...(replyToId !== null ? { parentId: replyToId } : {}),
       };
