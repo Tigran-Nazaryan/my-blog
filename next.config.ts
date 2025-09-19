@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.jsdelivr.net',
         pathname: '/gh/faker-js/assets-person-portrait/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+        pathname: '/**',
+      }
     ],
   },
   experimental: {
